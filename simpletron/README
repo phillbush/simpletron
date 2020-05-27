@@ -1,0 +1,298 @@
+simpletron(6)                    Games Manual                    simpletron(6)
+
+
+
+NAME
+       simpletron - simulates a simpletron computer
+
+SYNOPSIS
+       simpletron [-cv] file
+
+DESCRIPTION
+       simpletron simulates a Simpletron machine running the program file
+       written in SML, the Simpletron Machine Language.
+
+       The options are as follows:
+
+       -c     Do a core dump at the end of the simulation.  A core dump prints
+              the name and contents of each register as well as the complete
+              contents of memory.
+
+       -v     Be verbose.  Trace the execution and print on stderr the current
+              program counter and instruction register after executing each
+              instruction.
+
+       The input have the same format as instruction (see the section THE
+       SIMPLETRON MACHINE LANGUAGE for information on the instruction syntax).
+
+THE SIMPLETRON SIMULATOR
+   The memory
+       All information in the Simpletron is handled in terms of words.  A word
+       is a signed four-digit decimal number such as +3364, -1293, +0007,
+       -0001, and so on.
+
+       The Simpletron is equipped with a 100-word memory.  Each word in the
+       memory is referenced by their two-digit location numbers 00, 01, ...,
+       99.  The location 00 is the location of the first word, 01 is the
+       location of the second word, and so on.
+
+       Before running an SML program, the Simpletron Simulator loads the
+       programinto memory.  The first instruction of every program is always
+       placed in location 00.  Each location in the Simpletron's memory may
+       contain either an instruction, a data value used by a program, or an
+       unused (and hence undefined) area of memory.
+
+   The registers
+       The Simpletron has a single “general purpose” register known as the
+       accumulator.  Information must be put on the accumulator before the
+       Simpletron uses that information in calculations or examines it in
+       various ways.
+
+       The Simpletron also has “special purpose” registers used to manage the
+       instruction execution cycle.  These registers cannot be changed
+       directly.
+
+       program counter (PC)
+              The program counter keep track of the locationin memory that
+              contains the instruction being performed.
+
+       instruction register (IR)
+              The instruction register is a word containing the instruction
+              currently being performed.
+
+       opcode The opcode indicates the operation currently being performed.
+              It is the leftmost two digits of the instruction currently being
+              performed.
+
+       operand
+              The operand indicates the memory location or the immediate value
+              on which the current instruction operates.  It is the rightmost
+              two digits of the instruction currently being performed.
+
+   The instruction execution cycle
+       After the SML program has been loaded into the memory, the Simpletron
+       simulator executes it.  It begins with the instruction in location 00
+       and continues sequentially, unless directed to some other part of the
+       program by a transfer of control.
+
+       The instruction execution cycle do as the following.
+
+              The program counter tell the location of the next instruction to
+              be performed.
+
+              The contents of that location is fetched from memory into the
+              instruction register.
+
+              The operation code and the operand are extracted from the
+              instruction register.
+
+              The simpletron determines the operation to be executed.
+
+              At this point, the simulation of a instruction is completed.
+              All that remains is to prepare the Simpletron to execute the
+              next instruction.  So the Simpletron ajust the program counter
+              accordingly.
+
+THE SIMPLETRON MACHINE LANGUAGE
+       Each instruction written in the Simpletron Machine Language (SML)
+       occupies one word of the Simpletron's memory, so instructions are
+       signed four-digit decimal numbers.  We assume that the sign of an SML
+       instruction is always plus, but the sign of a data word may be either
+       plus or minus.  An instruction is a plus-signed 4-digit word composed
+       of two parts: the 2-digit operation code (aka “opcode”) and the 2-digit
+       operand.
+
+       The first two digits of each SML instruction are the operation code,
+       which specifies the operation to be performed.  SML operation codes are
+       summarized in the following sections between parentheses.
+
+       The last two digits of an SML instruction are the operand, which is
+       either the address of the memory location containing the word to which
+       the operation indirectly applies, or a value to which the operation
+       directly applies.
+
+       In a SML file, each line is a instruction, a instruction begins with a
+       plus or minus sign followed by four decimal digits.  The remaining of
+       the line is ignored.
+
+   Input/output operations
+       READ (10)
+              Read a word from the terminal into a specific location in
+              memory.
+
+       WRITE (11)
+              Write a word from a specific location in memory to the terminal.
+
+   Memory loading/storing
+       LOAD (20)
+              Loada word from a specific location in memory into the
+              accumulator.
+
+       STORE (21)
+              Store a word from the accumulator into a specific location in
+              memory.
+
+   Memory arithmetic operations
+       Note that all the results are left in accumulator.
+
+       ADD (30)
+              Add a word from a specific location in memory to the word in the
+              accumulator.
+
+       SUBTRACT (31)
+              Subtract a word from a specific location in memory from the word
+              in the accumulator.
+
+       DIVIDE (32)
+              Divide a word from a specific location in memory into the word
+              in the accumulator.
+
+       MULTIPLY (33)
+              Multiply a word from a specific location in memory by the word
+              in the accumulator.
+
+   Immediate arithmetic operations
+       Note that all the results are left in accumulator.
+
+       ADD_I (40)
+              Add a the value in operand to the word in the accumulator.
+
+       SUBTRACT_I (41)
+              Subtract the value in operand from the word in the accumulator.
+
+       DIVIDE_I (42)
+              Divide the value in operand into the word in the accumulator.
+
+       MULTIPLY_I (43)
+              Multiply the value in operand by the word in the accumulator.
+
+   Transfer-of-control operations
+       BRANCH (50)
+              Branch to a specific location in memory.
+
+       BRANCHNEG (51)
+              Branch to a specific location in memory if the accumulator is
+              negative.
+
+       BRANCHZERO (52)
+              Branch to a specific location in memory if the accumulator is
+              zero.
+
+       HALT (53)
+              Halt (i'e', the program has completed its task).
+
+EXAMPLES
+       The following are example of programs in the Simpletron Machine
+       Language (SML).
+
+   adder.sml
+       The following SML program reads two numbers from the keyboard and
+       computes and prints their sum.
+
+              +1007   READ A
+              +1008   READ B
+              +2007   LOAD A
+              +3008   ADD B
+              +2109   STORE C
+              +1109   WRITE C
+              +5300   HALT
+              +0000   A
+              +0000   B
+              +0000   C
+
+       (1) The instruction +1007 reads the first number from the keyboard and
+       places it into location 07 (which has been initialized to zero).
+
+       (2) Then +1008 reads the next number into location 08.
+
+       (3) The load instruction (+2007) puts the first number into the
+       accumulator.
+
+       (4) The add instruction (+3008) adds the second number to the number in
+       theaccumulator.  All SML aritmetic instructions leave their results in
+       the accumulator.
+
+       (5) The store instruction (+2109) placesthe result back into memory
+       location 09.
+
+       (6) From the location 09, the write instruction (+1109) takes the
+       number and prints it (as a signed four-digit decimal number).
+
+       (7) The halt instruction (+4300) terminates the execution.
+
+   larger.sml
+       The following SML program reads two numbers from the keyboard, and
+       determines and prints the larger value.  Note the use of the
+       instruction +5107 as a conditional transfer of control, much the same
+       as C's if statement.
+
+              +1009   READ A
+              +1010   READ B
+              +2009   LOAD A
+              +3110   SUBTRACT B
+              +5107   BRANCHNEG 07
+              +1109   WRITE A
+              +5300   HALT
+              +1110   WRITE B
+              +5300   HALT
+
+   sum.sml
+       The following program uses a sentinel-controlled loop to read positive
+       integers and compute and printe their sum.
+
+              +1008   READ A
+              +2008   LOAD A
+              +5206   BRANCHZERO 06
+              +3009   SUM B
+              +2109   STORE B
+              +5000   BRANCH 00
+              +1109   WRITE B
+              +5300   HALT
+              +0000   A
+              +0000   B
+
+   average7.sml
+       The following program uses a counter-controlled loop to read seven
+       numbers, some positive and some negative, and compute and print their
+       average.
+
+              +2015   LOAD N
+              +5210   BRANCHZERO 10
+              +1016   READ A
+              +2016   LOAD A
+              +3017   ADD B
+              +2117   STORE B
+              +2015   LOAD N
+              +4101   SUB_I 01
+              +2115   STORE N
+              +5000   BRANCH 00
+              +2017   LOAD B
+              +4207   DIV_I 07
+              +2117   STORE B
+              +1117   WRITE B
+              +5300   HALT
+              +0007   N
+              +0000   A
+              +0000   B
+
+EXIT STATUS
+       0      Success.
+
+       >0     Error occurred.
+
+HISTORY
+       This version of simpletron, the Simpletron Simulator, is based on the
+       exercises 7.27~7.29 from the [Deitel & Deitel] book.
+
+       The immediate operations are unique to this implementation, since the
+       exercise does not mention them.
+
+SEE ALSO
+       simple(6)
+
+       [Deitel & Deitel]
+              C: How to Program (8th edition), Paul Deitel and Harvey Deitel
+
+
+
+                                                                 simpletron(6)
