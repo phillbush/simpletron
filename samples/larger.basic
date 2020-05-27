@@ -1,0 +1,18 @@
+; determine the larger of two integers
+
+INPUT s
+INPUT t
+
+; test if s >= t
+IF s >= t, GOTO a
+
+; t is greater than s, so print t
+PRINT t
+GOTO b
+
+; s is greater than or equal to t, so print s
+a:
+PRINT s
+
+b:
+END

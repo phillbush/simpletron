@@ -1,0 +1,8 @@
+    LET n = 1
+    LET s = 1
+a:  IF n > 9, GOTO b
+    LET s = s * n
+    LET n = n + 2
+    GOTO a
+b:  PRINT s
+    END

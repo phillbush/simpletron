@@ -1,0 +1,66 @@
+SAMPLES = samples/basic.basic samples/adder.basic samples/sum.basic samples/larger.basic \
+          samples/average3.basic samples/oddprod.basic \
+          samples/sum5.basic
+TESTS = ${SAMPLES:.basic=}
+
+SIMPLETRON = ./simpletron/simpletron
+SIMPLE = ./simple/simple
+
+test: ${TESTS}
+
+${TESTS}: ${PROG}
+
+# basic: prints y = 3
+samples/basic: samples/basic.basic
+	@printf "%s:\t\n" samples/basic.basic
+	@${SIMPLE} -O -o $@ samples/basic.basic
+	@printf '+0003\n+0031\n' | ${SIMPLETRON} $@
+
+# adder: computes +AAAA plus +BBBB
+samples/adder: samples/adder.basic
+	@printf "%s:\t" samples/adder.basic
+	@${SIMPLE} -O -o $@ samples/adder.basic
+	@test `printf '+0003\n+0031\n' | ${SIMPLETRON} $@` = +0034 && \
+	echo OK
+
+# sum: sum from +0000 to +NNNN
+samples/sum: samples/sum.basic
+	@printf "%s:\t" samples/sum.basic
+	@${SIMPLE} -O -o $@ samples/sum.basic
+	@test `printf '+0007\n' | ${SIMPLETRON} $@` = +0028 && \
+	test `printf '+0010\n' | ${SIMPLETRON} $@` = +0055 && \
+	echo OK
+
+# larger: computes the larger from +AAAA and +BBBB
+samples/larger: samples/larger.basic
+	@printf "%s:\t" samples/larger.basic
+	@${SIMPLE} -O -o $@ samples/larger.basic
+	@test `printf '+0821\n+0310\n' | ${SIMPLETRON} $@` = +0821 && \
+	test `printf '+0310\n+0821\n' | ${SIMPLETRON} $@` = +0821 && \
+	echo OK
+
+# average3: computes the average from +AAAA, +BBBB and +CCCC
+samples/average3: samples/average3.basic
+	@printf "%s:\t" samples/average3.basic
+	@${SIMPLE} -O -o $@ samples/average3.basic
+	@test `printf '+0010\n+0034\n+0029\n' | ${SIMPLETRON} $@` = +0024 && \
+	echo OK
+
+# odd: computes the product of the odd integers from 1 to 9
+samples/oddprod: samples/oddprod.basic
+	@printf "%s:\t" samples/oddprod.basic
+	@${SIMPLE} -O -o $@ samples/oddprod.basic
+	@test `${SIMPLETRON} $@` = +0945 && \
+	echo OK
+
+# sum5: input 5 numbers and compute their sum
+samples/sum5: samples/sum5.basic
+	@printf "%s:\t" samples/sum5.basic
+	@${SIMPLE} -O -o $@ samples/sum5.basic
+	@test `printf '+0001\n+0002\n+0003\n+0004\n+0005\n' | ${SIMPLETRON} $@` = +0015 && \
+	echo OK
+
+clean-test:
+	rm -f ${TESTS}
+
+.PHONY: test clean-test

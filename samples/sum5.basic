@@ -1,0 +1,9 @@
+    LET i = 5
+    LET s = 0
+a:  IF i <= 0, GOTO b
+    INPUT n
+    LET s = s + n
+    LET i = i - 1
+    GOTO a
+b:  PRINT s
+    END

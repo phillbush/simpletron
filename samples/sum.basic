@@ -1,0 +1,20 @@
+INPUT x
+
+LET y = 0
+
+; check y == x
+a: IF y == x, GOTO e
+
+; increment y
+LET y = y + 1
+
+; ADD y to total
+LET t = t + y
+
+; loop y
+GOTO a
+
+; output result
+e:
+PRINT t
+END

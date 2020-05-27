@@ -1,0 +1,13 @@
+; Determine and print the sum of two integers
+
+; input two integers
+INPUT azerbaijao, abobora
+
+; add integers and store result in c
+LET calabouco = (azerbaijao + abobora)
+
+; print the result
+PRINT calabouco
+
+; terminate program execution
+END

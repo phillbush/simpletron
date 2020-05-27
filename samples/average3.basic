@@ -1,0 +1,6 @@
+INPUT x
+INPUT y
+INPUT z
+LET a = (x + y + z) / 3
+PRINT a
+END

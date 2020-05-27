@@ -1,0 +1,105 @@
+                        The Simpletron Simulator
+                                   &
+                          The Simple Compiler
+
+Simpletron is a virtual machine invented by Deitel for his books.
+Simpletron runs programs written in the Simpletron Machine Language, an
+simple Machine Language.
+
+An instruction (and data) in the Simpletron Machine Language is a signed
+four-digit integer, like +1009. The first two digits are the opcode, and
+the last two digits are the operand.
+
+Simple Basic is a Basic-like programming language that compiles into
+Simpletron Machine Language.
+
+
+§ History
+
+This software is a project done by me while reading «C: How to Program»,
+by Deitel & Deitel.
+
+The Simpletron Simulator first appeared as a code to be reviewed in
+codereview.stackexchange:
+
+	https://codereview.stackexchange.com/questions/239425
+
+The Simple Basic Compiler first appeared as a code to be reviewed in
+codereview.stackexchange:
+
+	https://codereview.stackexchange.com/questions/239616
+
+
+§ Files
+
+The files are:
+• ./include/memory.h:        Specify the memory size and the opcodes.
+• ./simple/*:                The source code for the Simple Compiler.
+• ./simple/simple.6          The manual for the Simple Compiler.
+• ./simpletron/*:            The source code for the Simpletron Simulator.
+• ./simpletron/simpletron.6: The manual for the Simpletron Simulator.
+• ./samples/*.basic:         Sample files in simple basic to be compiled
+                             to the Simpletron Machine Language.
+
+
+§ Usage
+
+To run a program 'file' written in the Simpletron Machine Language in
+the simpletron simulator, use the simpletron(1) command as in.
+│ simpletron file
+
+You can use the option ‘-c’ to do a core dump after running it, and ‘-v’
+to trace the execution and the registers of the Simpletron simulator.
+
+To compile a source code 'file.basic' written in the SimpleBASIC
+programming language into a program 'a.out' in the Simpletron Machine
+Language, use the simple(1) compiler as in.
+│ simple file.basic
+
+You can use the option ‘-O’ to optimize the compilation, and '-o' to
+specify a file other than 'a.out' to compile the program into.
+
+
+§ TODO
+
+TODO for simpletron(1).
+• Extend the Simpletron Simulator's memory to contain 1000 locations to
+  enable the Simpletron to handle larger programs.
+• Modify the simulator to use hexadecimal values rather than integer
+  values to represent simpletron Machine Language instructions.
+• Modify the simulator to allow output of a newline.  This requires an
+  additional Simpletron Machine Language instruction.
+• Modify the simulator to process floating-point values in addition to
+  integer values.
+• Modify the simulator to handle string input. [Hint: Each Simpletron
+  word can be divided into two groups, each holding a two-digit integer.
+  Each two-digit integer represents the ASCI decimal equivalent of a
+  character.  Add a machine-language instruction that will input a
+  string and store it beginning at a specific Simpletron memory
+  location.  The first half of the word at that location will be a count
+  of the number of characters in the string (i'e', the length of the
+  string).  Each succeeding half word contains one ASCII character
+  expressed as two decimal digits.  The machine-language instruction
+  converts each character into its ASCII equivalent and assigns it to a
+  half word.]
+• Modify the simulator to handle output of strings stored in the format
+  specified above. [Hint: Add a machine-language instruction that prints
+  a string beginning at a specified Simpletron memory location.  The
+  first half of the word at that location is the length of the string in
+  characters.  Each succeeding half word contains one ASCII character
+  expressed as two decimal digits.  The machine-language instruction
+  checks the length and prints the string by translating each two-digit
+  number into its equivalent character.]
+
+TODO for simple(1).
+• Allow arrays of integers.
+• Allow subroutines specified by the Simple commands {gosub} and
+  {return}.  Command {gosub} passes program control to a subroutine and
+  command {return} passes control back to the statement after gosub.
+  This is similar to a function call in C.  The same subroutine can be
+  called from many {gosub} distributed throughout a program.
+
+
+§ License
+
+This software is in public domain and is provided AS IS, with NO WARRANTY.
